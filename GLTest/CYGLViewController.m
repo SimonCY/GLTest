@@ -9,76 +9,8 @@
 #import "CYGLViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import <GLKit/GLKit.h>
+#import "staticShip.h"
 
-typedef struct {
-    GLfloat Position[3]; // 坐标：x, y, z
-    GLfloat Normal[3];//法线(用于开启光源)
-    GLfloat Color[4]; // 颜色
-    GLfloat texture[2];//纹理坐标  笛卡尔坐标系  与iPhone屏幕坐标系不同
-} Vertex;
-
-
-const Vertex Vertices[] = { //顶点坐标及颜色
-    
-    //正方体
-    {{ 1, -1,  1}, { 0, 1,  0},    {1, 0, 0, 1}, {1,0} },//右下
-    {{ 1,  1,  1}, { 0, 1,  0},    {0, 1, 0, 1}, {1,1} },//右上
-    {{-1,  1,  1}, { 0, 1,  0},    {0, 0, 1, 1}, {0,1}},//左上
-    {{-1, -1,  1}, { 0, 1,  0},    {1, 1, 0, 1}, {0,0}},//左下
-    {{ 1, -1, -1}, { 0, 1,  0},    {0, 0, 1, 1}, {1,0}},
-    {{ 1,  1, -1}, { 0, 1,  0},    {1, 1, 0, 1}, {1,1}},
-    {{-1,  1, -1}, { 0, 1,  0},    {1, 0, 0, 1}, {0,1}},
-    {{-1, -1, -1}, { 0, 1,  0},    {0, 1, 0, 1}, {0,0}},
-    
-    //底座
-    {{ 1.5, -1.2,  1.5}, { 0, 1,  0},       {0.6, 0.6, 0.6, 1}},
-    {{-1.5, -1.2,  1.5}, { 0, 1,  0},       {0.6, 0.6, 0.6, 1}},
-    {{-1.5, -1.2, -1.5}, { 0, 1,  0},       {0.6, 0.6, 0.6, 1}},
-    {{ 1.5, -1.2, -1.5}, { 0, 1,  0},       {0.6, 0.6, 0.6, 1}},
-    
-    {{ 1.5, -1.5,  1.5},{ 0, 1,  0},      {0.6, 0.6, 0.6, 1}},
-    {{-1.5, -1.5,  1.5},{ 0, 1,  0},      {0.6, 0.6, 0.6, 1}},
-    {{-1.5, -1.5, -1.5},{ 0, 1,  0},      {0.6, 0.6, 0.6, 1}},
-    {{ 1.5, -1.5, -1.5},{ 0, 1,  0},      {0.6, 0.6, 0.6, 1}}
-};
-
-const GLubyte Indices[] = { // 数组元素值对应的是顶点在Vertices数组中的下标。
-    //底座
-    8,  9,  13,
-    12, 13, 8,
-    12, 15, 8,
-    11, 15, 8,
-    8,  9,  10,
-    8,  11, 10,
-    9,  10, 13,
-    13, 14, 10,
-//    12, 13, 15,
-//    13, 15, 14,
-    10, 14, 15,
-    10, 11, 15,
-    
-    //正方体六个面
-    0, 1, 2, // 每一个行对应组成三角形的3个顶点
-    2, 3, 0,
-    
-    4, 5, 6,
-    6, 7, 4,
-    
-    0, 1, 4,
-    4, 5, 1,
-    
-    1, 5, 6,
-    1, 2, 6,
-    
-    2, 3, 6,
-    6, 7, 3,
-    
-    0, 3, 4,
-    3, 4, 7,
-    
-
-    
-};
 
 
 @interface CYGLViewController () <GLKViewControllerDelegate,GLKViewDelegate>{
@@ -178,42 +110,83 @@ const GLubyte Indices[] = { // 数组元素值对应的是顶点在Vertices数�
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
     
+    
+    //  1rst attribute buffer : vertices
+    /*    glVertexAttribPointer
+     第一个参数定义要设置的属性名。我们就使用预定义的GLKit常量。
+     第二个参数定义了每个顶点有多少个值。如果你往回看看顶点的结构，你会看到对于位置，有3个浮点值(x, y, z)，对于颜色有4个浮点值(r, g, b, a)。
+     第三个参数定义了每个值的类型-对于位置和颜色都是浮点型。
+     第四个参数通常都是false。
+     第五个参数是跨度（stride）的大小，简单点说就是包含每个顶点的数据结构的大小。所以我们可以简单地传进sizeof(Vertex)，让编译器帮助我们计算它。
+     最后一个参数是在数据结构中要获得此数据的偏移量。我们使用方便的offsetof操作来找到结构体中一个具体属性（就是从Vertex数据结构中，找到“位置”信息的偏移量）。
+     所以现在我们为GLKBaseEffect传递了位置和颜色数据，还剩下一步了：
+     */
+    
+    //开启对应的顶点属性
+    glEnableVertexAttribArray(GLKVertexAttribPosition);
+    //设置合适的格式从buffer里面读取数据
+    glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid *) offsetof(Vertex, Position));
+    
+    glEnableVertexAttribArray(GLKVertexAttribNormal);
+    glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid *) offsetof(Vertex, Normal));
+    
+    glEnableVertexAttribArray(GLKVertexAttribColor);
+    glVertexAttribPointer(GLKVertexAttribColor, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid *) offsetof(Vertex, Color));
+    
+    glEnableVertexAttribArray(GLKVertexAttribTexCoord0);
+    glVertexAttribPointer(GLKVertexAttribTexCoord0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid *) offsetof(Vertex, texture));
+    
+    
     //2.创建着色器
     self.effect = [[GLKBaseEffect alloc] init];
     //设置模型中的颜色缓存可用
-//    self.effect.colorMaterialEnabled = GL_TRUE;
+    self.effect.colorMaterialEnabled = GL_TRUE;
     
     
     //2.1创建光源并设置属性
     self.effect.light0.enabled = GL_TRUE;
     //光源位置向量
-    self.effect.light0.position = GLKVector4Make(4, 4, 2, 0);
+    self.effect.light0.position = GLKVector4Make(0, 2, 0, 1);
     //设置环境光线
-    self.effect.light0.ambientColor = GLKVector4Make(0.2, 0.2, 0.2, 1);
+    self.effect.light0.ambientColor = GLKVector4Make(0.7, 0.7, 0.7, 1);
     //漫反射光的颜色
-    self.effect.light0.diffuseColor = GLKVector4Make(0.7f, 0.7f, 0.7f, 1.f);
+    self.effect.light0.diffuseColor = GLKVector4Make(0.75f, 0.75f, 0.75f, 1.0f);
     //镜面高光
-    self.effect.light0.specularColor = GLKVector4Make(1, 1, 1, 1);
+    self.effect.light0.specularColor = GLKVector4Make(0.25f, 0.25f, 0.25f, 1.0f);
+    
+    self.effect.lightingType = GLKLightingTypePerVertex;
+    
+    self.effect.light1.enabled = GL_TRUE;
+    //光源位置向量
+    self.effect.light1.position = GLKVector4Make(0, -3, -7, 1);
+    //漫反射光的颜色
+    self.effect.light1.diffuseColor = GLKVector4Make(0.75f, 0.75f, 0.75f, 1.0f);
+    //镜面高光
+    self.effect.light1.specularColor = GLKVector4Make(0.25f, 0.25f, 0.25f, 1.0f);
+    
+    
     
     //2.2设置材料属性
     //材料反光度
-    self.effect.material.shininess = 1;
+    self.effect.material.shininess = 0.5;
+    self.effect.material.diffuseColor = GLKVector4Make(0.8, 0.8, 0.8, 1);
+//    self.effect.material.specularColor = GLKVector4Make(0.8, 0.8, 0.8, 1.0f);
     //材料发射光
-//    self.effect.material.emissiveColor = GLKVector4Make(1, 0, 0, 1);
-    
+//    self.effect.material.emissiveColor = GLKVector4Make(0.2, 0.2, 0.2, 1);
+
     //设置光源颜色
-    self.effect.useConstantColor = GL_TRUE;
+//    self.effect.useConstantColor = GL_TRUE;
 //    self.effect.constantColor = GLKVector4Make(0, 1, 1, 1);
     
     //3.纹理贴图
     
-    NSString* filePath = [[NSBundle mainBundle] pathForResource:@"texture02.png" ofType:nil];
-    NSDictionary* options = [NSDictionary dictionaryWithObjectsAndKeys:@(1), GLKTextureLoaderOriginBottomLeft, nil];//GLKTextureLoaderOriginBottomLeft 纹理坐标系是相反的
-    GLKTextureInfo* textureInfo = [GLKTextureLoader textureWithContentsOfFile:filePath options:options error:nil];
-    self.effect.texture2d0.enabled = GL_TRUE;
-    self.effect.texture2d0.name = textureInfo.name;
-    self.effect.texture2d0.target = GLKTextureTarget2D;
-    self.effect.texture2d0.envMode = GLKTextureEnvModeReplace;
+//    NSString* filePath = [[NSBundle mainBundle] pathForResource:@"texture02.png" ofType:nil];
+//    NSDictionary* options = [NSDictionary dictionaryWithObjectsAndKeys:@(1), GLKTextureLoaderOriginBottomLeft, nil];//GLKTextureLoaderOriginBottomLeft 纹理坐标系是相反的
+//    GLKTextureInfo* textureInfo = [GLKTextureLoader textureWithContentsOfFile:filePath options:options error:nil];
+//    self.effect.texture2d0.enabled = GL_TRUE;
+//    self.effect.texture2d0.name = textureInfo.name;
+//    self.effect.texture2d0.target = GLKTextureTarget2D;
+//    self.effect.texture2d0.envMode = GLKTextureEnvModeReplace;
     
 
  
@@ -292,7 +265,7 @@ const GLubyte Indices[] = { // 数组元素值对应的是顶点在Vertices数�
     //计算glkView的方向比例
     float aspect = fabs(self.view.bounds.size.width / self.view.bounds.size.height);
     //第一个参数是镜头视角  第二个参数是方向比例  第三四个参数代表可见范围，设置近平面距离眼睛4单位，远平面10单位  超过这个范围的图像将不显示
-    GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(90.0f), aspect, 3.0f, 15.0f);
+    GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(90.0f), aspect, 0.1f, 15.0f);
     //设置效果转化属性的投影矩阵
     self.effect.transform.projectionMatrix = projectionMatrix;
     
@@ -325,31 +298,7 @@ const GLubyte Indices[] = { // 数组元素值对应的是顶点在Vertices数�
     [self.effect prepareToDraw];
     
 
-    //  1rst attribute buffer : vertices
-    /*    glVertexAttribPointer
-     第一个参数定义要设置的属性名。我们就使用预定义的GLKit常量。
-     第二个参数定义了每个顶点有多少个值。如果你往回看看顶点的结构，你会看到对于位置，有3个浮点值(x, y, z)，对于颜色有4个浮点值(r, g, b, a)。
-     第三个参数定义了每个值的类型-对于位置和颜色都是浮点型。
-     第四个参数通常都是false。
-     第五个参数是跨度（stride）的大小，简单点说就是包含每个顶点的数据结构的大小。所以我们可以简单地传进sizeof(Vertex)，让编译器帮助我们计算它。
-     最后一个参数是在数据结构中要获得此数据的偏移量。我们使用方便的offsetof操作来找到结构体中一个具体属性（就是从Vertex数据结构中，找到“位置”信息的偏移量）。
-     所以现在我们为GLKBaseEffect传递了位置和颜色数据，还剩下一步了：
-     */
-    
-    //开启对应的顶点属性
-    glEnableVertexAttribArray(GLKVertexAttribPosition);
-    //设置合适的格式从buffer里面读取数据
-    glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid *) offsetof(Vertex, Position));
-    
-    glEnableVertexAttribArray(GLKVertexAttribNormal);
-    glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid *) offsetof(Vertex, Normal));
-    
-    glEnableVertexAttribArray(GLKVertexAttribColor);
-    glVertexAttribPointer(GLKVertexAttribColor, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid *) offsetof(Vertex, Color));
-    
-    glEnableVertexAttribArray(GLKVertexAttribTexCoord0);
-    glVertexAttribPointer(GLKVertexAttribTexCoord0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid *) offsetof(Vertex, texture));
-    
+
     /*  draw
         第一个参数定义了绘制定点的方法，GL_TRIANGLES是最通用的
         第二个参数是要渲染的顶点的数量
