@@ -94,7 +94,7 @@
     [EAGLContext setCurrentContext:self.context];
     
     glEnable(GL_DEPTH_TEST);//发送第一个“GL”指令：激活“深度检测”。
-
+    glEnable(GL_BLEND);
     
     
     //------OpenGL的缓冲由一些标准的函数（glGenBuffers, glBindBuffer, glBufferData, glVertexAttribPointer）来创建、绑定、填充和配置；
@@ -175,18 +175,20 @@
 //    self.effect.material.emissiveColor = GLKVector4Make(0.2, 0.2, 0.2, 1);
 
     //设置光源颜色
-//    self.effect.useConstantColor = GL_TRUE;
-//    self.effect.constantColor = GLKVector4Make(0, 1, 1, 1);
+    self.effect.useConstantColor = GL_TRUE;
+    self.effect.constantColor = GLKVector4Make(1, 1, 1, 1);
     
     //3.纹理贴图
     
-//    NSString* filePath = [[NSBundle mainBundle] pathForResource:@"texture02.png" ofType:nil];
-//    NSDictionary* options = [NSDictionary dictionaryWithObjectsAndKeys:@(1), GLKTextureLoaderOriginBottomLeft, nil];//GLKTextureLoaderOriginBottomLeft 纹理坐标系是相反的
-//    GLKTextureInfo* textureInfo = [GLKTextureLoader textureWithContentsOfFile:filePath options:options error:nil];
-//    self.effect.texture2d0.enabled = GL_TRUE;
-//    self.effect.texture2d0.name = textureInfo.name;
-//    self.effect.texture2d0.target = GLKTextureTarget2D;
-//    self.effect.texture2d0.envMode = GLKTextureEnvModeReplace;
+    NSString* filePath0 = [[NSBundle mainBundle] pathForResource:@"texture03.jpg" ofType:nil];
+    NSDictionary* options0 = [NSDictionary dictionaryWithObjectsAndKeys:@(1), GLKTextureLoaderOriginBottomLeft, nil];//GLKTextureLoaderOriginBottomLeft 纹理坐标系是相反的
+    GLKTextureInfo* textureInfo0 = [GLKTextureLoader textureWithContentsOfFile:filePath0 options:options0 error:nil];
+    self.effect.texture2d0.enabled = GL_TRUE;
+    self.effect.texture2d0.name = textureInfo0.name;
+    self.effect.texture2d0.target = GLKTextureTarget2D;
+    self.effect.texture2d0.envMode = GLKTextureEnvModeModulate;
+    
+
     
 
  
@@ -279,7 +281,7 @@
     self.effect.transform.modelviewMatrix = modelViewMatrix;
     
     
-    
+    //前三个参数代表眼睛坐标   中间三个参数代表注视点坐标   后三个参数代表正方向坐标
 //    self.effect.transform.modelviewMatrix = GLKMatrix4MakeLookAt(6, 6, 6, 0, 0, 0, 0, 1, 0);
 
     
