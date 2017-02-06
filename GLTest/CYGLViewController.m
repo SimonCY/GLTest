@@ -181,7 +181,7 @@
     //3.纹理贴图
     
     NSString* filePath0 = [[NSBundle mainBundle] pathForResource:@"texture03.jpg" ofType:nil];
-    NSDictionary* options0 = [NSDictionary dictionaryWithObjectsAndKeys:@(1), GLKTextureLoaderOriginBottomLeft, nil];//GLKTextureLoaderOriginBottomLeft 纹理坐标系是相反的
+    NSDictionary* options0 = [NSDictionary dictionaryWithObjectsAndKeys:@(1), GLKTextureLoaderOriginBottomLeft, nil];//GLKTextureLoaderOriginBottomLeft 纹理坐标系是相反的   避免渲染出的纹理上下颠倒
     GLKTextureInfo* textureInfo0 = [GLKTextureLoader textureWithContentsOfFile:filePath0 options:options0 error:nil];
     self.effect.texture2d0.enabled = GL_TRUE;
     self.effect.texture2d0.name = textureInfo0.name;
