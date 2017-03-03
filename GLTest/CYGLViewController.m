@@ -93,9 +93,11 @@
     //1.设置的当前上下文（防止在实际操作中上下文切换带来的错误）
     [EAGLContext setCurrentContext:self.context];
     
-    glEnable(GL_DEPTH_TEST);//发送第一个“GL”指令：激活“深度检测”。
+    //发送第一个“GL”指令：激活“深度检测”。
+    glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
-    
+    //剔除背面显示（当三角形的背面朝向观察者时显示透明）
+//    glEnable(GL_CULL_FACE);
     
     //------OpenGL的缓冲由一些标准的函数（glGenBuffers, glBindBuffer, glBufferData, glVertexAttribPointer）来创建、绑定、填充和配置；
     
@@ -140,39 +142,40 @@
     //2.创建着色器
     self.effect = [[GLKBaseEffect alloc] init];
     //设置模型中的颜色缓存可用
-    self.effect.colorMaterialEnabled = GL_TRUE;
+//    self.effect.colorMaterialEnabled = GL_TRUE;
     
     
     //2.1创建光源并设置属性
+    self.effect.lightingType = GLKLightingTypePerVertex;
+    
     self.effect.light0.enabled = GL_TRUE;
     //光源位置向量
     self.effect.light0.position = GLKVector4Make(0, 2, 0, 1);
-    //设置环境光线
-    self.effect.light0.ambientColor = GLKVector4Make(0.7, 0.7, 0.7, 1);
+    //设置环境光线（多个光源的光是叠加的）比较耗费资源  一般做法是直接让物体直接发光
+//    self.effect.light0.ambientColor = GLKVector4Make(0.7, 0.7, 0.7, 1);
     //漫反射光的颜色
     self.effect.light0.diffuseColor = GLKVector4Make(0.75f, 0.75f, 0.75f, 1.0f);
-    //镜面高光
-    self.effect.light0.specularColor = GLKVector4Make(0.25f, 0.25f, 0.25f, 1.0f);
+
     
-    self.effect.lightingType = GLKLightingTypePerVertex;
     
     self.effect.light1.enabled = GL_TRUE;
     //光源位置向量
     self.effect.light1.position = GLKVector4Make(0, -3, -7, 1);
     //漫反射光的颜色
     self.effect.light1.diffuseColor = GLKVector4Make(0.75f, 0.75f, 0.75f, 1.0f);
-    //镜面高光
-    self.effect.light1.specularColor = GLKVector4Make(0.25f, 0.25f, 0.25f, 1.0f);
+
     
     
     
     //2.2设置材料属性
     //材料反光度
-    self.effect.material.shininess = 0.5;
-    self.effect.material.diffuseColor = GLKVector4Make(0.8, 0.8, 0.8, 1);
+//    self.effect.material.shininess = 0.5;
+    //漫反射光颜色
+//    self.effect.material.diffuseColor = GLKVector4Make(0.8, 0.8, 0.8, 1);
+    //镜面高光
 //    self.effect.material.specularColor = GLKVector4Make(0.8, 0.8, 0.8, 1.0f);
     //材料发射光
-//    self.effect.material.emissiveColor = GLKVector4Make(0.2, 0.2, 0.2, 1);
+    self.effect.material.emissiveColor = GLKVector4Make(0.35, 0.35, 0.35, 1);
 
     //设置光源颜色
     self.effect.useConstantColor = GL_TRUE;
@@ -187,11 +190,12 @@
     self.effect.texture2d0.name = textureInfo0.name;
     self.effect.texture2d0.target = GLKTextureTarget2D;
     self.effect.texture2d0.envMode = GLKTextureEnvModeModulate;
-    
 
-    
+//mipmap技术：线性过滤和各向异性过滤都存在一个共同的问题。那就是如果从远处观察纹理，只对4个纹素作混合显得不够。实际上，如果3D模型位于很远的地方，屏幕上只看得见一个像素，那计算平均值得出最终颜色值时，图像所有的纹素都应该考虑在内。可以选用nearest、linear、anisotropic等任意一种滤波方式来对mipmap采样。
+//    // When MAGnifying the image (no bigger mipmap available), use LINEAR filtering
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
- 
+
 
 
 }
@@ -249,7 +253,18 @@
 
 #pragma mark - glkViewControllerDelegate
 - (void)glkViewControllerUpdate:(GLKViewController *)controller {
-    
+    /*  
+     
+     GLKMatrix4MakePerspective是透视投影变换
+     GLKMatrix4Translate是平移变换
+     GLKMatrix4Rotate是旋转变换
+     
+     modelViewMatrix = GLKMatrix4RotateX(modelViewMatrix, self.mDegreeX);
+     modelViewMatrix = GLKMatrix4RotateY(modelViewMatrix, self.mDegreeY);
+     modelViewMatrix = GLKMatrix4RotateZ(modelViewMatrix, self.mDegreeZ);
+     以上三者分别是绕x y z 三轴变换
+     
+     */
 //    if (_increasing) {
 //        _curRed += 1.0 * controller.timeSinceLastUpdate;
 //    } else {
@@ -263,7 +278,6 @@
 //        _curRed = 0.0;
 //        _increasing = YES;
 //    }
-    
     //计算glkView的方向比例
     float aspect = fabs(self.view.bounds.size.width / self.view.bounds.size.height);
     //第一个参数是镜头视角  第二个参数是方向比例  第三四个参数代表可见范围，设置近平面距离眼睛4单位，远平面10单位  超过这个范围的图像将不显示
@@ -289,13 +303,13 @@
 
 #pragma mark - glkViewDelegate
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect {
-
-    //清空和渲染背景
+    
+    //清空和渲染背景 
     glClearColor(_curR, _curG, _curB, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
     glClear(GL_DEPTH_BUFFER_BIT);
     glClear(GL_STENCIL_BUFFER_BIT);
-    
+
     //该操作是同步的 必须在drawRect方法中进行
     [self.effect prepareToDraw];
     
