@@ -9,6 +9,7 @@
 #import "CYGLViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import <GLKit/GLKit.h>
+#import <OpenGLES/ES2/glext.h>
 #import "staticShip.h"
 
 
@@ -29,11 +30,15 @@
 @property (nonatomic,strong) GLKBaseEffect* effect;
 @property (nonatomic,strong) GLKView* glkView;
 
+
 @end
 
 @implementation CYGLViewController
 
+
+
 - (void)loadView {
+    
     self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
     
     self.glkView = [[GLKView alloc] initWithFrame:[[UIScreen mainScreen]bounds]];
@@ -75,7 +80,6 @@
     _curG = 1.0;
     _curB = 1.0;
     
-
     [self setupGL];
     
     
@@ -84,9 +88,9 @@
 - (void)dealloc {
     [self tearDownGL];
 }
-/**
- 初始化
- */
+
+
+/** 初始化  */
 - (void)setupGL {
     
     
@@ -98,6 +102,7 @@
     glEnable(GL_BLEND);
     //剔除背面显示（当三角形的背面朝向观察者时显示透明）
 //    glEnable(GL_CULL_FACE);
+  
     
     //------OpenGL的缓冲由一些标准的函数（glGenBuffers, glBindBuffer, glBufferData, glVertexAttribPointer）来创建、绑定、填充和配置；
     
@@ -183,7 +188,7 @@
     
     //3.纹理贴图
     
-    NSString* filePath0 = [[NSBundle mainBundle] pathForResource:@"texture03.jpg" ofType:nil];
+    NSString* filePath0 = [[NSBundle mainBundle] pathForResource:@"texture00.png" ofType:nil];
     NSDictionary* options0 = [NSDictionary dictionaryWithObjectsAndKeys:@(1), GLKTextureLoaderOriginBottomLeft, nil];//GLKTextureLoaderOriginBottomLeft 纹理坐标系是相反的   避免渲染出的纹理上下颠倒
     GLKTextureInfo* textureInfo0 = [GLKTextureLoader textureWithContentsOfFile:filePath0 options:options0 error:nil];
     self.effect.texture2d0.enabled = GL_TRUE;
@@ -327,125 +332,5 @@
     
 }
 
-//Image和buffer互转
-/*
-- (CVPixelBufferRef) pixelBufferFromCGImage: (CGImageRef) image
-{
-    NSDictionary *options = @{
-                              (NSString*)kCVPixelBufferCGImageCompatibilityKey : @YES,
-                              (NSString*)kCVPixelBufferCGBitmapContextCompatibilityKey : @YES,
-                              (NSString*)kCVPixelBufferIOSurfacePropertiesKey: [NSDictionary dictionary]
-                              };
-    CVPixelBufferRef pxbuffer = NULL;
-    
-    CGFloat frameWidth = CGImageGetWidth(image);
-    CGFloat frameHeight = CGImageGetHeight(image);
-    
-    CVReturn status = CVPixelBufferCreate(kCFAllocatorDefault,
-                                          frameWidth,
-                                          frameHeight,
-                                          kCVPixelFormatType_32BGRA,
-                                          (__bridge CFDictionaryRef) options,
-                                          &pxbuffer);
-    
-    NSParameterAssert(status == kCVReturnSuccess && pxbuffer != NULL);
-    
-    CVPixelBufferLockBaseAddress(pxbuffer, 0);
-    void *pxdata = CVPixelBufferGetBaseAddress(pxbuffer);
-    NSParameterAssert(pxdata != NULL);
-    
-    CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
-    
-    CGContextRef context = CGBitmapContextCreate(pxdata,
-                                                 frameWidth,
-                                                 frameHeight,
-                                                 8,
-                                                 CVPixelBufferGetBytesPerRow(pxbuffer),
-                                                 rgbColorSpace,
-                                                 (CGBitmapInfo)kCGImageAlphaNoneSkipFirst);
-    NSParameterAssert(context);
-    CGContextConcatCTM(context, CGAffineTransformIdentity);
-    CGContextDrawImage(context, CGRectMake(0,
-                                           0,
-                                           frameWidth,
-                                           frameHeight),
-                       image);
-    CGColorSpaceRelease(rgbColorSpace);
-    CGContextRelease(context);
-    
-    CVPixelBufferUnlockBaseAddress(pxbuffer, 0);
-    
-    return pxbuffer;
-    
-    //    NSDictionary *options = @{
-    //                              (NSString*)kCVPixelBufferCGImageCompatibilityKey : @YES,
-    //                              (NSString*)kCVPixelBufferCGBitmapContextCompatibilityKey : @YES,
-    //                              (NSString*)kCVPixelBufferIOSurfacePropertiesKey: [NSDictionary dictionary]
-    //                              };
-    //
-    //
-    //    CVPixelBufferRef pxbuffer = NULL;
-    //
-    //    CVReturn status = CVPixelBufferCreate(kCFAllocatorDefault, CGImageGetWidth(image),
-    //                                          CGImageGetHeight(image), kCVPixelFormatType_32BGRA, (__bridge CFDictionaryRef)options,
-    //                                          &pxbuffer);
-    //    if (status!=kCVReturnSuccess) {
-    //        NSLog(@"Operation failed");
-    //    }
-    //
-    //    NSParameterAssert(status == kCVReturnSuccess && pxbuffer != NULL);
-    //
-    //    CVPixelBufferLockBaseAddress(pxbuffer, 0);
-    //    void *pxdata = CVPixelBufferGetBaseAddress(pxbuffer);
-    //
-    //    CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
-    //    CGContextRef context = CGBitmapContextCreate(pxdata, CGImageGetWidth(image),
-    //                                                 CGImageGetHeight(image), 8, 4*CGImageGetWidth(image), rgbColorSpace,
-    //                                                 kCGImageAlphaNoneSkipFirst);
-    //    NSParameterAssert(context);
-    //
-    //    CGContextConcatCTM(context, CGAffineTransformMakeRotation(0));
-    //    CGAffineTransform flipVertical = CGAffineTransformMake( 1, 0, 0, -1, 0, CGImageGetHeight(image) );
-    //    CGContextConcatCTM(context, flipVertical);
-    //    CGAffineTransform flipHorizontal = CGAffineTransformMake( -1.0, 0.0, 0.0, 1.0, CGImageGetWidth(image), 0.0 );
-    //    CGContextConcatCTM(context, flipHorizontal);
-    //
-    //    CGContextDrawImage(context, CGRectMake(0, 0, CGImageGetWidth(image),
-    //                                           CGImageGetHeight(image)), image);
-    //    CGColorSpaceRelease(rgbColorSpace);
-    //    CGContextRelease(context);
-    //
-    //    CVPixelBufferUnlockBaseAddress(pxbuffer, 0);
-    //    return pxbuffer;
-}
 
-- (UIImage *)imageFromPixelBuffer:(CVPixelBufferRef)pixelBufferRef {
-    CVImageBufferRef imageBuffer =  pixelBufferRef;
-    
-    CVPixelBufferLockBaseAddress(imageBuffer, 0);
-    void *baseAddress = CVPixelBufferGetBaseAddress(imageBuffer);
-    size_t width = CVPixelBufferGetWidth(imageBuffer);
-    size_t height = CVPixelBufferGetHeight(imageBuffer);
-    size_t bufferSize = CVPixelBufferGetDataSize(imageBuffer);
-    size_t bytesPerRow = CVPixelBufferGetBytesPerRowOfPlane(imageBuffer, 0);
-    
-    CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
-    CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, baseAddress, bufferSize, NULL);
-    
-    CGImageRef cgImage = CGImageCreate(width, height, 8, 32, bytesPerRow, rgbColorSpace, kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrderDefault, provider, NULL, true, kCGRenderingIntentDefault);
-    
-    
-    UIImage *image = [UIImage imageWithCGImage:cgImage];
-    
-    CGImageRelease(cgImage);
-    CGDataProviderRelease(provider);
-    CGColorSpaceRelease(rgbColorSpace);
-    
-    //    NSData* imageData = UIImageJPEGRepresentation(image, 1.0);
-    //    image = [UIImage imageWithData:imageData];
-    CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
-    return image;
-}
-
-*/
 @end
