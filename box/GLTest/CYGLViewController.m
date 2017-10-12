@@ -102,7 +102,7 @@
     glEnable(GL_BLEND);
     //剔除背面显示（当三角形的背面朝向观察者时显示透明）
 //    glEnable(GL_CULL_FACE);
-  
+ 
     
     //------OpenGL的缓冲由一些标准的函数（glGenBuffers, glBindBuffer, glBufferData, glVertexAttribPointer）来创建、绑定、填充和配置；
     
@@ -326,10 +326,9 @@
         第三个参数是所以数组中每个索引的数据类型。
         最后一个参数应该是一个指向索引的指针。
      */
-    glDrawElements(GL_TRIANGLES, sizeof(Indices)/sizeof(Indices[0]), GL_UNSIGNED_BYTE, 0);
+//    glDrawElements(GL_TRIANGLES, sizeof(Indices)/sizeof(Indices[0]), GL_UNSIGNED_BYTE, 0);
     
-    
-    
+    glDrawArrays(GL_TRIANGLES, 0, sizeof(Vertices) / sizeof(Vertex));
 }
 
 
