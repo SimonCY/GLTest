@@ -8,7 +8,8 @@
 
 #import "AppDelegate.h"
 
-#import "CYGLViewController.h"
+#import "CYGLBaseViewController.h"
+#import "ViewController.h"
 
 @interface AppDelegate ()
 
@@ -19,11 +20,11 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc]initWithFrame:[[UIScreen mainScreen]bounds]];
-//    CYBasicViewController *basicVC = [[CYBasicViewController alloc] init];
-    CYGLViewController * glVC = [[CYGLViewController alloc] init];
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:glVC];
+//    CYGLBaseViewController * glVC = [[CYGLBaseViewController alloc] init];
+    ViewController *vc = [[ViewController alloc]init];
     
-    self.window.rootViewController = nav;
+    
+    self.window.rootViewController = vc;
 
     [self.window makeKeyAndVisible];
     return YES;

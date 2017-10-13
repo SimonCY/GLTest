@@ -10,10 +10,10 @@
 #define staticShip_h
 
 typedef struct {
-    GLfloat Position[3]; // 坐标：x, y, z
-    GLfloat Normal[3];//法线(用于开启光源)
-    GLfloat Color[4]; // 颜色
-    GLfloat texture[2];//纹理坐标  笛卡尔坐标系  与iPhone屏幕坐标系不同
+    GLfloat Position[3];    // 坐标：x, y, z
+    GLfloat Normal[3];      //法线(用于开启光源)
+    GLfloat Color[4];       // 颜色
+    GLfloat texture[2];     //纹理坐标  笛卡尔坐标系  与iPhone屏幕坐标系不同
 } Vertex;
 
 

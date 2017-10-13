@@ -12,7 +12,7 @@
 		7333E7101E5ADB9500BDF86E /* Earth512x256.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7333E70C1E5ADB9500BDF86E /* Earth512x256.jpg */; };
 		7333E7111E5ADB9500BDF86E /* Moon256x128.png in Resources */ = {isa = PBXBuildFile; fileRef = 7333E70D1E5ADB9500BDF86E /* Moon256x128.png */; };
 		7333E7121E5ADB9500BDF86E /* sphere.obj in Resources */ = {isa = PBXBuildFile; fileRef = 7333E70F1E5ADB9500BDF86E /* sphere.obj */; };
-		739B817D1E2620F800C9677C /* CYGLViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 739B817C1E2620F800C9677C /* CYGLViewController.m */; };
+		739B817D1E2620F800C9677C /* CYGLBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 739B817C1E2620F800C9677C /* CYGLBaseViewController.m */; };
 		739B81811E2CD3BF00C9677C /* texture02.png in Resources */ = {isa = PBXBuildFile; fileRef = 739B81801E2CD3BF00C9677C /* texture02.png */; };
 		B653B8C21E252D3400D6E1BE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B653B8C11E252D3400D6E1BE /* main.m */; };
 		B653B8C51E252D3400D6E1BE /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B653B8C41E252D3400D6E1BE /* AppDelegate.m */; };
@@ -23,6 +23,7 @@
 		B653B8F81E252F3300D6E1BE /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B653B8F71E252F3300D6E1BE /* OpenGLES.framework */; };
 		B653B8FA1E252F4500D6E1BE /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B653B8F91E252F4500D6E1BE /* GLKit.framework */; };
 		B653B8FC1E252F4900D6E1BE /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B653B8FB1E252F4900D6E1BE /* QuartzCore.framework */; };
+		B6AA1DDD1F90DB0300005D7A /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B6AA1DDC1F90DB0300005D7A /* ViewController.m */; };
 		B6DEA07F1F8CB3F6007701D5 /* car.obj in Resources */ = {isa = PBXBuildFile; fileRef = B6DEA07C1F8CAD8E007701D5 /* car.obj */; };
 		B6DEA0801F8CB407007701D5 /* smoothMonkey.obj in Resources */ = {isa = PBXBuildFile; fileRef = B6DEA07E1F8CB2FC007701D5 /* smoothMonkey.obj */; };
 		B6DEA0811F8CB423007701D5 /* texture00.png in Resources */ = {isa = PBXBuildFile; fileRef = B602B5121F8C845100E970D9 /* texture00.png */; };
@@ -55,8 +56,8 @@
 		7333E70D1E5ADB9500BDF86E /* Moon256x128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Moon256x128.png; sourceTree = "<group>"; };
 		7333E70E1E5ADB9500BDF86E /* sphere.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sphere.h; sourceTree = "<group>"; };
 		7333E70F1E5ADB9500BDF86E /* sphere.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sphere.obj; sourceTree = "<group>"; };
-		739B817B1E2620F800C9677C /* CYGLViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CYGLViewController.h; sourceTree = "<group>"; };
-		739B817C1E2620F800C9677C /* CYGLViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CYGLViewController.m; sourceTree = "<group>"; };
+		739B817B1E2620F800C9677C /* CYGLBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CYGLBaseViewController.h; sourceTree = "<group>"; };
+		739B817C1E2620F800C9677C /* CYGLBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CYGLBaseViewController.m; sourceTree = "<group>"; };
 		739B81801E2CD3BF00C9677C /* texture02.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = texture02.png; sourceTree = "<group>"; };
 		B602B5021F7F883700E970D9 /* sphere.mtl */ = {isa = PBXFileReference; lastKnownFileType = text; path = sphere.mtl; sourceTree = "<group>"; };
 		B602B50E1F8C6E0800E970D9 /* sphere.obj */ = {isa = PBXFileReference; lastKnownFileType = text; path = sphere.obj; sourceTree = "<group>"; };
@@ -77,6 +78,8 @@
 		B653B8F71E252F3300D6E1BE /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		B653B8F91E252F4500D6E1BE /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		B653B8FB1E252F4900D6E1BE /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		B6AA1DDB1F90DB0300005D7A /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		B6AA1DDC1F90DB0300005D7A /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		B6DEA07B1F8CAD8E007701D5 /* car.mtl */ = {isa = PBXFileReference; lastKnownFileType = text; path = car.mtl; sourceTree = "<group>"; };
 		B6DEA07C1F8CAD8E007701D5 /* car.obj */ = {isa = PBXFileReference; lastKnownFileType = text; path = car.obj; sourceTree = "<group>"; };
 		B6DEA07D1F8CB2FB007701D5 /* smoothMonkey.mtl */ = {isa = PBXFileReference; lastKnownFileType = text; path = smoothMonkey.mtl; sourceTree = "<group>"; };
@@ -142,8 +145,10 @@
 				B653B8C41E252D3400D6E1BE /* AppDelegate.m */,
 				B6DFF5461F8E0AE8002BBAA4 /* fragment.glsl */,
 				B6DFF5491F8E0B00002BBAA4 /* vertex.glsl */,
-				739B817B1E2620F800C9677C /* CYGLViewController.h */,
-				739B817C1E2620F800C9677C /* CYGLViewController.m */,
+				739B817B1E2620F800C9677C /* CYGLBaseViewController.h */,
+				739B817C1E2620F800C9677C /* CYGLBaseViewController.m */,
+				B6AA1DDB1F90DB0300005D7A /* ViewController.h */,
+				B6AA1DDC1F90DB0300005D7A /* ViewController.m */,
 				B6DFF54B1F8E0B21002BBAA4 /* staticShip.h */,
 				B6DEA07D1F8CB2FB007701D5 /* smoothMonkey.mtl */,
 				B6DEA07E1F8CB2FC007701D5 /* smoothMonkey.obj */,
@@ -351,9 +356,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				B653B8C51E252D3400D6E1BE /* AppDelegate.m in Sources */,
-				739B817D1E2620F800C9677C /* CYGLViewController.m in Sources */,
+				739B817D1E2620F800C9677C /* CYGLBaseViewController.m in Sources */,
 				B653B8C21E252D3400D6E1BE /* main.m in Sources */,
 				B6DFF5481F8E0AE8002BBAA4 /* fragment.glsl in Sources */,
+				B6AA1DDD1F90DB0300005D7A /* ViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
