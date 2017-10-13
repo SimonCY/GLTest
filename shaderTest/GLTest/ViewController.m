@@ -43,12 +43,12 @@
             _rotationX += velocity.y / 100.0;
             _rotationY += velocity.x / 100.0;
             
-            //            if (_rotationX >= 90) {
-            //                _rotationX = 90;
-            //            }
-            //            if (_rotationX <= 0) {
-            //                _rotationX = 0;
-            //            }
+            if (_rotationX >= 90) {
+                _rotationX = 90;
+            }
+            if (_rotationX <= 0) {
+                _rotationX = 0;
+            }
             break;
         }
         case UIGestureRecognizerStateCancelled:
@@ -72,20 +72,16 @@
      注意： 3d变换的顺序必须是先旋转再平移，最后执行透视或正交投影
      GLKMatrix4Multiply(translateMatrix, rotateMatrix)函数中translateMatrix在前代表先旋转  后平移
      */
-    GLKMatrix4 modelMatrix = GLKMatrix4Identity;
     //旋转变换
     GLKMatrix4 rotateXMatrix = GLKMatrix4MakeRotation(GLKMathDegreesToRadians(_rotationX), 1, 0, 0);
     GLKMatrix4 rotateYMatrix = GLKMatrix4MakeRotation(GLKMathDegreesToRadians(_rotationY), 0, 1, 0);
     //合并旋转变换
     GLKMatrix4 rotateMatrix = GLKMatrix4Multiply(rotateXMatrix, rotateYMatrix);
     //平移变换
-    GLKMatrix4 translateMatrix = GLKMatrix4MakeTranslation( 0.0, 0.0, -1.0);
+    GLKMatrix4 translateMatrix = GLKMatrix4MakeTranslation( 0.0, 0.0, 0.0);
     //合并平移、旋转变换
-    modelMatrix = GLKMatrix4Multiply(translateMatrix, rotateMatrix);
-    //将旋转、平移matrix传递给shader
-    GLuint modelViewMatrixUniformLocation = glGetUniformLocation(self.shaderProgram, "modelMatrix");
-    glUniformMatrix4fv(modelViewMatrixUniformLocation, 1, 0, modelMatrix.m);
-    
+    self.modelMatrix = GLKMatrix4Multiply(translateMatrix, rotateMatrix);
+
     
     // 2.投影：投影常见的类型有透视投影和正交投影
     /* 2.1 透视投影
@@ -94,11 +90,8 @@
      第三、四个参数代表可见范围，设置近平面距离眼睛4单位，远平面10单位  超过这个范围的图像将不显示
      */
     float aspect =  self.view.frame.size.width / self.view.frame.size.height;
-    GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(90.0f), aspect, 0.1f, 100.f);
-    //将透视投影matrix传递给shader
-    GLuint projectionMatrixUniformLocation = glGetUniformLocation(self.shaderProgram, "projectionMatrix");
-    glUniformMatrix4fv(projectionMatrixUniformLocation, 1, 0, projectionMatrix.m);
-    
+    self.projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(90.0f), aspect, 0.1f, 100.f);
+
     
     /* 2.2.正交投影
      属于平行投影的一种   在正交投影范围内，人眼看到的物体不随着距离的远近生大小的改变
@@ -121,15 +114,15 @@
      后三个参数代表正方向坐标
      */
     float varyingFactor = sin(self.elapsedTime);
-    GLKMatrix4 cameraMatrix = GLKMatrix4MakeLookAt(0, varyingFactor,0.1,0 ,0,  -1, 0, 1, 0);
-    GLuint cameraMatrixUniformLocation = glGetUniformLocation(self.shaderProgram, "cameraMatrix");
-    glUniformMatrix4fv(cameraMatrixUniformLocation, 1, 0, cameraMatrix.m);
+    self.cameraMatrix = GLKMatrix4MakeLookAt(varyingFactor, varyingFactor,2,0 ,0,  0, 0, 1, 0);
+
+    [self setNeedsUpdateMatrixInShaders];
 }
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect {
     [super glkView:view drawInRect:rect];
     
-    [self drawTriangle];
+    [self drawCube];
 }
 
 #pragma mark - draw triangle

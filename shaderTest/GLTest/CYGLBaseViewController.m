@@ -38,6 +38,10 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
     
+    self.modelMatrix = GLKMatrix4Identity;
+    self.projectionMatrix = GLKMatrix4Identity;
+    self.cameraMatrix = GLKMatrix4Identity;
+    
     [self setupContext];
     [self setupShader];
  
@@ -53,7 +57,6 @@
 - (void)update {
  
     glUseProgram(self.shaderProgram);
-    
     
     /* 0.刷新时间
      距离上一次调用update过了多长时间，比如一个游戏物体速度是3m/s,那么每一次调用update，
@@ -77,23 +80,29 @@
     glClear(GL_DEPTH_BUFFER_BIT);
     glClear(GL_STENCIL_BUFFER_BIT);
 
-    //激活“深度检测”。
-    glEnable(GL_DEPTH_TEST);
-    //颜色混合，用于混合处理透明或半透明的物体，启用时关闭深度检测
-    /*
-    glEnable(GL_BLEND);
-    glBlendFunc( GL_ONE , GL_ZERO );        // 源色将覆盖目标色
-    glBlendFunc( GL_ZERO , GL_ONE );        // 目标色将覆盖源色
-    glBlendFunc( GL_SRC_ALPHA , GL_ONE_MINUS_SRC_ALPHA ); // 是最常使用的
-     */
-    //剔除背面显示（当三角形的背面朝向观察者时显示透明）
-//    glEnable(GL_CULL_FACE);
-    
     glUseProgram(self.shaderProgram);
+    
+    //draw sth.
 }
 
 
 #pragma mark - public
+
+- (void)setNeedsUpdateMatrixInShaders {
+    
+    glUseProgram(self.shaderProgram);
+    
+    //将旋转、平移matrix传递给shader
+    GLuint modelViewMatrixUniformLocation = glGetUniformLocation(self.shaderProgram, "modelMatrix");
+    glUniformMatrix4fv(modelViewMatrixUniformLocation, 1, 0, self.modelMatrix.m);
+    
+    //将透视投影matrix传递给shader
+    GLuint projectionMatrixUniformLocation = glGetUniformLocation(self.shaderProgram, "projectionMatrix");
+    glUniformMatrix4fv(projectionMatrixUniformLocation, 1, 0, self.projectionMatrix.m);
+    
+    GLuint cameraMatrixUniformLocation = glGetUniformLocation(self.shaderProgram, "cameraMatrix");
+    glUniformMatrix4fv(cameraMatrixUniformLocation, 1, 0, self.cameraMatrix.m);
+}
 
 /* 为shader中的position和color赋值 */
 - (void)bindAttribs:(GLfloat *)triangleData {
@@ -142,12 +151,26 @@
     
     //抗锯齿   以前对于每个像素，都会调用一次fragment shader（片段着色器），开启后会将像素区分成更小的单元，并在更细微的层面上多次调用fragment shader。之后它将返回的颜色合并，生成更光滑的几何边缘效果。(慎用，耗资源严重)
     //    glkView.drawableMultisample = GLKViewDrawableMultisample4X;
+    
+    [EAGLContext setCurrentContext:self.context];
+    //激活“深度检测”。
+    glEnable(GL_DEPTH_TEST);
+    //颜色混合，用于混合处理透明或半透明的物体，启用时关闭深度检测
+    /*
+     glEnable(GL_BLEND);
+     glBlendFunc( GL_ONE , GL_ZERO );        // 源色将覆盖目标色
+     glBlendFunc( GL_ZERO , GL_ONE );        // 目标色将覆盖源色
+     glBlendFunc( GL_SRC_ALPHA , GL_ONE_MINUS_SRC_ALPHA ); // 是最常使用的
+     */
+    //剔除背面显示（当三角形的背面朝向观察者时显示透明）
+    //    glEnable(GL_CULL_FACE);
 }
 
 /* 初始化顶点着色器和片段着色器并生成program */
 - (void)setupShader {
     
     [EAGLContext setCurrentContext:self.context];
+    
     NSString *vertexShaderPath = [[NSBundle mainBundle] pathForResource:@"vertex" ofType:@"glsl"];
     NSString *fragmentShaderPath = [[NSBundle mainBundle] pathForResource:@"fragment" ofType:@"glsl"];
     NSString *vertexShaderContent = [NSString stringWithContentsOfFile:vertexShaderPath encoding:NSUTF8StringEncoding error:nil];
