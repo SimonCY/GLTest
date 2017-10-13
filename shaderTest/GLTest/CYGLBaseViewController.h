@@ -27,7 +27,7 @@
 - (void)update;
 
 /* 为shader中的postition和color属性赋值 */
-- (void)bindAttribs:(GLfloat *)triangleData;
+- (void)bindAttribs:(GLfloat *)ptr;
 
 /* 在update中调用以更新三种矩阵数据到shader */
 - (void)setNeedsUpdateMatrixInShaders;

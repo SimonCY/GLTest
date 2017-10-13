@@ -105,7 +105,7 @@
 }
 
 /* 为shader中的position和color赋值 */
-- (void)bindAttribs:(GLfloat *)triangleData {
+- (void)bindAttribs:(GLfloat *)ptr {
     // 启用Shader中的两个属性
     // attribute vec4 position;
     // attribute vec4 color;
@@ -122,8 +122,8 @@
     // normalized: 暂时用不上
     // stride: 每一个点包含几个byte，本例中就是6个GLfloat，x,y,z,r,g,b
     // ptr: 数据开始的指针，位置就是从头开始，颜色则跳过3个GLFloat的大小
-    glVertexAttribPointer(positionAttribLocation, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (char *)triangleData);
-    glVertexAttribPointer(colorAttribLocation, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (char *)triangleData + 3 * sizeof(GLfloat));
+    glVertexAttribPointer(positionAttribLocation, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (char *)ptr);
+    glVertexAttribPointer(colorAttribLocation, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (char *)ptr + 3 * sizeof(GLfloat));
 }
 
 

@@ -159,7 +159,7 @@
 }
 
 - (void)drawXPlanes {
-    static GLfloat triangleData[] = {
+    static GLfloat p[] = {
         // X轴0.5处的平面
         0.5,  -0.5,    0.5f, 1,  0,  0,
         0.5,  -0.5f,  -0.5f, 1,  0,  0,
@@ -175,12 +175,12 @@
         -0.5,  0.5f,    0.5f, 1,  0,  0,
         -0.5,  -0.5f,   0.5f, 1,  0,  0,
     };
-    [self bindAttribs:triangleData];
+    [self bindAttribs:p];
     glDrawArrays(GL_TRIANGLES, 0, 12);
 }
 
 - (void)drawYPlanes {
-    static GLfloat triangleData[] = {
+    static GLfloat p[] = {
         -0.5,  0.5,  0.5f, 0,  1,  0,
         -0.5f, 0.5, -0.5f, 0,  1,  0,
         0.5f, 0.5,  -0.5f, 0,  1,  0,
@@ -194,12 +194,12 @@
         0.5f, -0.5,   0.5f, 0,  1,  0,
         -0.5f, -0.5,  0.5f, 0,  1,  0,
     };
-    [self bindAttribs:triangleData];
+    [self bindAttribs:p];
     glDrawArrays(GL_TRIANGLES, 0, 12);
 }
 
 - (void)drawZPlanes {
-    static GLfloat triangleData[] = {
+    static GLfloat p[] = {
         -0.5,   0.5f,  0.5,   0,  0,  1,
         -0.5f,  -0.5f,  0.5,  0,  0,  1,
         0.5f,   -0.5f,  0.5,  0,  0,  1,
@@ -213,7 +213,7 @@
         0.5f,  0.5f,  -0.5,    0,  0,  1,
         -0.5f,   0.5f,  -0.5,  0,  0,  1,
     };
-    [self bindAttribs:triangleData];
+    [self bindAttribs:p];
     glDrawArrays(GL_TRIANGLES, 0, 12);
 }
 
